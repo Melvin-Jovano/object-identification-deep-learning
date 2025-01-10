@@ -24,24 +24,26 @@ def predict(img):
         processed_image = preprocess_image(img)
         predictions = model.predict(processed_image)
         predicted_class = np.argmax(predictions, axis=-1)
-        return Response[str](data=object_entities[int(predicted_class[0])], is_success=True).model_dump()
+        confidence = float(np.max(predictions) * 100)
+        return Response[dict](data={
+            "entity": object_entities[int(predicted_class[0])],
+            "confidence_score": confidence
+        }, is_success=True).model_dump()
     except Exception as e:
         return Response[str](error=str(e), is_success=False, data="").model_dump()
     
 def predict_frame(frame, id, idx):
     try:
-        # Convert frame (numpy array) to PIL image
         img = Image.fromarray(frame)
-        
-        # Preprocess the image for the model
         processed_image = preprocess_image(img)
-
-        # Make the prediction
         predictions = model.predict(processed_image)
         predicted_class = np.argmax(predictions, axis=-1)
-
-        # Return the predicted class as a response
-        return {"url": f"{HOST}:{PORT}/wwwroot/{id}/frame_{idx}.jpg", "entity": object_entities[int(predicted_class[0])]}
+        confidence = float(np.max(predictions) * 100)
+        return {
+            "confidence_score": confidence,
+            "url": f"{HOST}:{PORT}/wwwroot/{id}/frame_{idx}.jpg", 
+            "entity": object_entities[int(predicted_class[0])]
+        }
     
     except Exception as e:
         return None
