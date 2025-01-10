@@ -1,4 +1,7 @@
 from services.model import *
 
-def create_identification_controller(img):
+def identify_image_controller(img):
     return predict(img)
+
+def identify_video_controller(img):
+    return predict_video(img)
