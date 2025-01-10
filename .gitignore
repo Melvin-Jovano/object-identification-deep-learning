@@ -1,0 +1,7 @@
+**/__pycache__/
+
+# Only For Mac
+env 
+.env 
+
+lib
